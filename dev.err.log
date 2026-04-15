@@ -1,0 +1,31 @@
+⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+Error: Cannot find module 'C:\ROOT\node_modules\tesseract.js\src\worker-script\node\index.js'
+    at ignore-listed frames {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+}
+⨯ uncaughtException: Error: Cannot find module 'C:\ROOT\node_modules\tesseract.js\src\worker-script\node\index.js'
+    at ignore-listed frames {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+}
+⨯ uncaughtException:  Error: Cannot find module 'C:\ROOT\node_modules\tesseract.js\src\worker-script\node\index.js'
+    at ignore-listed frames {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+}
+Error: Cannot find module 'C:\ROOT\node_modules\tesseract.js\src\worker-script\node\index.js'
+    at ignore-listed frames {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+}
+⨯ uncaughtException: Error: Cannot find module 'C:\ROOT\node_modules\tesseract.js\src\worker-script\node\index.js'
+    at ignore-listed frames {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+}
+⨯ uncaughtException:  Error: Cannot find module 'C:\ROOT\node_modules\tesseract.js\src\worker-script\node\index.js'
+    at ignore-listed frames {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+}

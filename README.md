@@ -1,24 +1,36 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+SmartNutriAnalyzer is a web app for personalized calorie/macro targets, meal logging, and ingredient analysis (meals + packaged products).
 
 ## Getting Started
 
-First, run the development server:
+### 1) Install
+
+```bash
+npm install
+```
+
+### 2) Start Postgres (Docker)
+
+```bash
+docker compose up -d
+```
+
+### 3) Configure env
+
+Copy `.env.example` to `.env` and adjust values.
+
+### 4) Create DB tables (Prisma)
+
+```bash
+npm run prisma:migrate
+```
+
+### 5) Run the dev server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Open `http://localhost:3000`.
 
 ## Learn More
 
