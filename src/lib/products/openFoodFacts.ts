@@ -6,6 +6,15 @@ export type OffProduct = {
   image_url?: string;
 };
 
+type OffProductResponse = {
+  status?: number;
+  product?: OffProduct;
+};
+
+type OffSearchResponse = {
+  products?: OffProduct[];
+};
+
 export async function offFetchByBarcode(barcode: string) {
   const url = `https://world.openfoodfacts.org/api/v2/product/${encodeURIComponent(
     barcode,
@@ -15,9 +24,11 @@ export async function offFetchByBarcode(barcode: string) {
     cache: "no-store",
   });
   if (!res.ok) return { ok: false as const, status: res.status };
-  const json = (await res.json().catch(() => null)) as any;
-  if (!json || json.status !== 1) return { ok: false as const, status: 404 };
-  return { ok: true as const, product: json.product as OffProduct, raw: json };
+  const json = (await res.json().catch(() => null)) as OffProductResponse | null;
+  if (!json || json.status !== 1 || !json.product) {
+    return { ok: false as const, status: 404 };
+  }
+  return { ok: true as const, product: json.product, raw: json };
 }
 
 export async function offSearch(query: string, page = 1, pageSize = 10) {
@@ -31,7 +42,7 @@ export async function offSearch(query: string, page = 1, pageSize = 10) {
     cache: "no-store",
   });
   if (!res.ok) return { ok: false as const, status: res.status };
-  const json = (await res.json().catch(() => null)) as any;
+  const json = (await res.json().catch(() => null)) as OffSearchResponse | null;
   const products = (json?.products ?? []) as OffProduct[];
   return { ok: true as const, products, raw: json };
 }

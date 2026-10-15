@@ -2,58 +2,72 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="grid gap-8">
-      <section className="rounded-2xl border border-zinc-200 bg-white p-8 shadow-sm dark:border-zinc-800 dark:bg-zinc-950">
-        <h1 className="text-3xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
-          Smarter nutrition decisions, one meal at a time.
-        </h1>
-        <p className="mt-3 max-w-2xl text-zinc-600 dark:text-zinc-300">
-          Set your goal, track calories and macros, and analyze ingredient lists
-          (meals or packaged products) to spot potential concerns and discover
-          better alternatives.
-        </p>
-        <div className="mt-6 flex flex-wrap gap-3">
-          <Link
-            href="/profile/onboarding"
-            className="inline-flex items-center justify-center rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200"
-          >
-            Start onboarding
-          </Link>
-          <Link
-            href="/products"
-            className="inline-flex items-center justify-center rounded-md border border-zinc-200 bg-white px-4 py-2 text-sm font-medium text-zinc-900 hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50 dark:hover:bg-zinc-900"
-          >
-            Analyze a product
-          </Link>
+    <div className="grid gap-8 animate-in fade-in duration-300">
+      {/* Hero Banner Section */}
+      <section className="rounded-2xl border border-[#2A2A2A] bg-gradient-to-b from-[#151515] to-[#111111] p-6 sm:p-10 relative overflow-hidden shadow-2xl">
+        <div className="max-w-3xl space-y-4 relative z-10">
+          <div className="inline-flex items-center gap-2 rounded-full border border-[#FF6B00]/40 bg-[#FF6B00]/10 px-3 py-1 text-xs font-mono font-bold text-[#FF6B00] uppercase tracking-wider">
+            <span>✨</span> SMART NUTRITION & INGREDIENT INTELLIGENCE
+          </div>
+          <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white uppercase leading-none">
+            Know What's <span className="text-[#FF6B00]">Inside Your Food.</span>
+          </h1>
+          <p className="text-[#A0A0A0] text-sm sm:text-base leading-relaxed max-w-2xl">
+            Set your body goals, track daily calories & macros in real time, analyze ingredient labels to flag hidden additives & high sodium, and discover cleaner, healthier alternatives.
+          </p>
+
+          <div className="pt-3 flex flex-wrap items-center gap-4">
+            <Link
+              href="/products/analyze"
+              className="inline-flex items-center justify-center rounded-lg bg-[#FF6B00] px-6 py-3.5 text-sm font-bold text-white uppercase tracking-wider hover:bg-[#E05E00] transition-colors border border-[#FF6B00] shadow-lg"
+            >
+              Scan Product Barcode →
+            </Link>
+            <Link
+              href="/log"
+              className="inline-flex items-center justify-center rounded-lg bg-[#151515] border border-[#2A2A2A] px-6 py-3.5 text-sm font-bold text-white uppercase tracking-wider hover:border-[#FF6B00] hover:text-[#FF6B00] transition-colors"
+            >
+              Log Meal Photo
+            </Link>
+            <Link
+              href="/profile/onboarding"
+              className="inline-flex items-center justify-center rounded-lg bg-transparent px-4 py-3.5 text-sm font-bold text-[#A0A0A0] hover:text-white uppercase tracking-wider transition-colors"
+            >
+              Set Targets →
+            </Link>
+          </div>
         </div>
       </section>
 
-      <section className="grid gap-4 md:grid-cols-3">
-        <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-950">
-          <h2 className="font-semibold text-zinc-900 dark:text-zinc-50">
-            Personalized targets
+      {/* Feature Pillar Cards */}
+      <section className="grid gap-6 md:grid-cols-3">
+        <div className="rounded-xl border border-[#2A2A2A] bg-[#111111] p-6 hover:border-[#FF6B00] transition-colors">
+          <div className="text-[#FF6B00] font-mono text-xs font-bold mb-2">01 // TARGETS</div>
+          <h2 className="font-bold text-white text-lg uppercase tracking-tight">
+            Personalized Targets
           </h2>
-          <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-300">
-            Get daily calories and macro ranges based on your profile, activity,
-            and goal.
+          <p className="mt-2 text-sm text-[#A0A0A0] leading-relaxed">
+            Calculate daily calories, protein, carb, and fat targets derived strictly from your age, body weight, activity level, and weight goals via Mifflin-St Jeor BMR & TDEE.
           </p>
         </div>
-        <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-950">
-          <h2 className="font-semibold text-zinc-900 dark:text-zinc-50">
-            Meal logging
+
+        <div className="rounded-xl border border-[#2A2A2A] bg-[#111111] p-6 hover:border-[#FF6B00] transition-colors">
+          <div className="text-[#FF6B00] font-mono text-xs font-bold mb-2">02 // LOGGING</div>
+          <h2 className="font-bold text-white text-lg uppercase tracking-tight">
+            Photo & AI Meal Logging
           </h2>
-          <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-300">
-            Track foods and portions, and see your daily totals update in real
-            time.
+          <p className="mt-2 text-sm text-[#A0A0A0] leading-relaxed">
+            Capture or upload a meal photo to estimate calories and macro breakdowns, edit portion estimates, and track daily macro totals updating in real time.
           </p>
         </div>
-        <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-950">
-          <h2 className="font-semibold text-zinc-900 dark:text-zinc-50">
-            Ingredient insights
+
+        <div className="rounded-xl border border-[#2A2A2A] bg-[#111111] p-6 hover:border-[#FF6B00] transition-colors">
+          <div className="text-[#FF6B00] font-mono text-xs font-bold mb-2">03 // INGREDIENTS</div>
+          <h2 className="font-bold text-white text-lg uppercase tracking-tight">
+            Safety & Clean Alternatives
           </h2>
-          <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-300">
-            Identify potentially harmful ingredients and get safer alternatives
-            with clear explanations.
+          <p className="mt-2 text-sm text-[#A0A0A0] leading-relaxed">
+            Flag high sodium, artificial preservatives, high fructose corn syrup, or harmful additives with clear severity warnings and discover clean-label brand alternatives.
           </p>
         </div>
       </section>

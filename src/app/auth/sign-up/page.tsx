@@ -12,16 +12,16 @@ export default function SignUpPage() {
   const [loading, setLoading] = useState(false);
 
   return (
-    <div className="mx-auto w-full max-w-md">
-      <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
-        Create account
+    <div className="mx-auto w-full max-w-md pt-8">
+      <h1 className="text-2xl font-bold tracking-tight text-white uppercase">
+        Create Account
       </h1>
-      <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-300">
-        Create an account to save your profile and logs.
+      <p className="mt-2 text-sm text-[#A0A0A0]">
+        Register to save your profile metrics and meal logs.
       </p>
 
       <form
-        className="mt-6 grid gap-4 rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-950"
+        className="mt-6 grid gap-4 rounded-xl border border-[#2A2A2A] bg-[#111111] p-6"
         onSubmit={async (e) => {
           e.preventDefault();
           setLoading(true);
@@ -58,57 +58,56 @@ export default function SignUpPage() {
         }}
       >
         <div className="grid gap-2">
-          <label className="text-sm font-medium">Name (optional)</label>
+          <label className="text-sm font-medium text-white">Full Name (optional)</label>
           <input
             value={name}
             onChange={(e) => setName(e.target.value)}
             autoComplete="name"
-            className="rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm dark:border-zinc-800 dark:bg-black"
+            className="rounded-lg border border-[#2A2A2A] bg-[#151515] px-3 py-2 text-sm text-white focus:border-[#FF6B00] outline-none"
           />
         </div>
         <div className="grid gap-2">
-          <label className="text-sm font-medium">Email</label>
+          <label className="text-sm font-medium text-white">Email Address</label>
           <input
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             type="email"
             autoComplete="email"
-            className="rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm dark:border-zinc-800 dark:bg-black"
+            className="rounded-lg border border-[#2A2A2A] bg-[#151515] px-3 py-2 text-sm text-white focus:border-[#FF6B00] outline-none"
           />
         </div>
         <div className="grid gap-2">
-          <label className="text-sm font-medium">Password</label>
+          <label className="text-sm font-medium text-white">Password</label>
           <input
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             type="password"
             autoComplete="new-password"
-            className="rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm dark:border-zinc-800 dark:bg-black"
+            className="rounded-lg border border-[#2A2A2A] bg-[#151515] px-3 py-2 text-sm text-white focus:border-[#FF6B00] outline-none"
           />
-          <p className="text-xs text-zinc-500">Minimum 8 characters.</p>
+          <p className="text-xs text-[#A0A0A0]">Minimum 8 characters.</p>
         </div>
         {error ? (
-          <div className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700 dark:border-red-900/40 dark:bg-red-950/40 dark:text-red-200">
-            {error}
+          <div className="rounded-lg border border-[#FF2D2D] bg-[#151515] px-3 py-2 text-sm text-[#FF2D2D]">
+            ⚠️ {error}
           </div>
         ) : null}
         <button
           disabled={loading}
-          className="inline-flex items-center justify-center rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-60 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200"
+          className="inline-flex items-center justify-center rounded-lg bg-[#FF6B00] px-4 py-2.5 text-sm font-bold text-white uppercase tracking-wider hover:bg-[#E05E00] disabled:opacity-50 transition-colors border border-[#FF6B00]"
         >
-          {loading ? "Creating..." : "Create account"}
+          {loading ? "Creating..." : "Create Account"}
         </button>
-        <p className="text-xs text-zinc-500">
-          Already have an account?{" "}
+        <p className="text-xs text-[#A0A0A0]">
+          Already registered?{" "}
           <Link
             href="/auth/sign-in"
-            className="text-zinc-900 underline underline-offset-4 dark:text-zinc-50"
+            className="text-[#FF6B00] font-semibold hover:underline"
           >
-            Sign in
+            Sign In Here
           </Link>
         </p>
       </form>
     </div>
   );
 }
-

@@ -1,5 +1,6 @@
 import { prisma } from "@/db/prisma";
 import { offFetchByBarcode } from "@/lib/products/openFoodFacts";
+import type { Prisma } from "@prisma/client";
 import { z } from "zod";
 
 export async function GET(
@@ -34,14 +35,14 @@ export async function GET(
       ingredientsText: p.ingredients_text ?? null,
       imageUrl: p.image_url ?? null,
       source: "openfoodfacts",
-      raw: res.raw as any,
+      raw: res.raw ? JSON.stringify(res.raw) : null,
     },
     update: {
       name: p.product_name ?? null,
       brand: p.brands ?? null,
       ingredientsText: p.ingredients_text ?? null,
       imageUrl: p.image_url ?? null,
-      raw: res.raw as any,
+      raw: res.raw ? JSON.stringify(res.raw) : null,
     },
   });
 

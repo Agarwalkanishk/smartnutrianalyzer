@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
-import { type ReactNode, useState } from "react";
+import { useEffect, type ReactNode, useRef, useState } from "react";
+import { SortYourFoodGame } from "@/components/SortYourFoodGame";
 
 export function SignInClient() {
   const rainIcons: { label: string; icon: ReactNode }[] = [
@@ -77,26 +78,67 @@ export function SignInClient() {
       ),
     },
   ];
-  const drops = Array.from({ length: 30 }, (_, index) => ({
+
+  const drops = Array.from({ length: 24 }, (_, index) => ({
     id: index,
     icon: rainIcons[index % rainIcons.length],
-    left: ((index * 37) % 100) + 1,
-    duration: 8 + (index % 6),
+    left: ((index * 41) % 100) + 1,
+    duration: 10 + (index % 6),
     delay: (index % 8) * 0.7,
-    size: 16 + (index % 4) * 4,
-    opacity: 0.25 + (index % 3) * 0.15,
+    size: 18 + (index % 4) * 5,
+    opacity: 0.25,
   }));
 
   const params = useSearchParams();
   const callbackUrl = params.get("callbackUrl") ?? "/dashboard";
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
+  const emailInputRef = useRef<HTMLInputElement | null>(null);
+
+  const handleSkipGame = () => {
+    emailInputRef.current?.focus();
+    emailInputRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    try {
+      const res = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+        callbackUrl,
+      });
+
+      setLoading(false);
+
+      if (!res || res.error) {
+        setError("Email or password doesn't look right. Please try again.");
+        return;
+      }
+
+      window.location.href = res.url ?? callbackUrl;
+    } catch (err: unknown) {
+      setLoading(false);
+      setError(`Auth request error: ${err instanceof Error ? err.message : String(err)}`);
+    }
+  };
+
   return (
-    <div className="relative isolate min-h-[calc(100vh-10rem)] w-full overflow-hidden">
-      <div className="pointer-events-none absolute inset-0 z-0">
+    <div className="relative isolate min-h-[calc(100vh-5rem)] w-full bg-[#080808] flex items-center justify-center p-4 md:p-8 overflow-hidden">
+      {/* Background Original Falling Food Animation (Decorative, Non-interactive) */}
+      <div
+        className="pointer-events-none absolute inset-0 z-0 overflow-hidden"
+        style={{ pointerEvents: "none" }}
+      >
         {drops.map((drop) => (
           <span
             key={drop.id}
@@ -107,12 +149,13 @@ export function SignInClient() {
               animationDuration: `${drop.duration}s`,
               animationDelay: `${drop.delay}s`,
               opacity: drop.opacity,
+              pointerEvents: "none",
             }}
             title={drop.icon.label}
           >
             <span
-              className="inline-flex text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.65)]"
-              style={{ width: `${drop.size}px`, height: `${drop.size}px` }}
+              className="inline-flex text-white"
+              style={{ width: `${drop.size}px`, height: `${drop.size}px`, pointerEvents: "none" }}
             >
               {drop.icon.icon}
             </span>
@@ -120,97 +163,139 @@ export function SignInClient() {
         ))}
       </div>
 
-      <div className="relative z-10 mx-auto w-full max-w-md pt-8">
-        <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
-          Sign in
-        </h1>
-        <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-300">
-          Use your email and password to continue.
-        </p>
-
-        <form
-          className="mt-6 grid gap-4 rounded-2xl border border-zinc-200 bg-white/95 p-6 shadow-sm backdrop-blur-[1px] dark:border-zinc-800 dark:bg-zinc-950/90"
-          onSubmit={async (e) => {
-            e.preventDefault();
-            setLoading(true);
-            setError(null);
-            const res = await signIn("credentials", {
-              email,
-              password,
-              redirect: false,
-              callbackUrl,
-            });
-            setLoading(false);
-
-            if (!res || res.error) {
-              setError("Invalid email or password.");
-              return;
-            }
-
-            window.location.href = res.url ?? callbackUrl;
-          }}
-        >
-          <div className="grid gap-2">
-            <label className="text-sm font-medium">Email</label>
-            <input
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              type="email"
-              autoComplete="email"
-              className="rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm dark:border-zinc-800 dark:bg-black"
-            />
+      <div className="relative z-10 w-full max-w-6xl grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+        {/* LEFT COLUMN: Primary Brand Slogan & Sky Game Hero */}
+        <div className="md:col-span-7 flex flex-col justify-between space-y-6">
+          <div className="space-y-2">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white uppercase leading-tight">
+              GOOD FOOD.
+              <br />
+              <span className="text-[#FF6B00]">BETTER CHOICES.</span>
+            </h1>
+            <p className="text-sm sm:text-base text-[#A0A0A0] max-w-lg leading-relaxed">
+              Know what you eat.
+            </p>
           </div>
-          <div className="grid gap-2">
-            <label className="text-sm font-medium">Password</label>
-            <input
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              type="password"
-              autoComplete="current-password"
-              className="rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm dark:border-zinc-800 dark:bg-black"
-            />
-          </div>
-          {error ? (
-            <div className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700 dark:border-red-900/40 dark:bg-red-950/40 dark:text-red-200">
-              {error}
+
+          {/* Direct Mount Signature Sky Game Component */}
+          <SortYourFoodGame onSkip={handleSkipGame} />
+        </div>
+
+        {/* RIGHT COLUMN: Clean, Premium Sign-In Form */}
+        <div className="md:col-span-5 w-full">
+          <div className="rounded-xl border border-[#2A2A2A] bg-[#111111] p-6 sm:p-8 space-y-6 shadow-2xl relative z-20">
+            <div className="space-y-1">
+              <h2 className="text-2xl font-bold tracking-tight text-white">
+                Welcome back
+              </h2>
+              <p className="text-sm text-[#A0A0A0]">
+                Sign in to continue.
+              </p>
             </div>
-          ) : null}
-          <button
-            disabled={loading}
-            className="inline-flex items-center justify-center rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-60 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200"
-          >
-            {loading ? "Signing in..." : "Sign in"}
-          </button>
-          <p className="text-xs text-zinc-500">
-            No account?{" "}
-            <Link
-              href="/auth/sign-up"
-              className="text-zinc-900 underline underline-offset-4 dark:text-zinc-50"
-            >
-              Create one
-            </Link>
-          </p>
-        </form>
+
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {/* Email Input */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-medium text-[#A0A0A0] uppercase tracking-wider">
+                  Email Address
+                </label>
+                <input
+                  ref={emailInputRef}
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="name@example.com"
+                  autoComplete="email"
+                  className="w-full rounded-lg border border-[#2A2A2A] bg-[#151515] px-3.5 py-2.5 text-sm text-white placeholder-[#555555] focus:border-[#FF6B00] focus:outline-none transition-colors"
+                />
+              </div>
+
+              {/* Password Input with eye toggle */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-medium text-[#A0A0A0] uppercase tracking-wider">
+                  Password
+                </label>
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••"
+                    autoComplete="current-password"
+                    className="w-full rounded-lg border border-[#2A2A2A] bg-[#151515] pl-3.5 pr-12 py-2.5 text-sm text-white placeholder-[#555555] focus:border-[#FF6B00] focus:outline-none transition-colors"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    onPointerDown={(e) => {
+                      e.preventDefault();
+                      setShowPassword(!showPassword);
+                    }}
+                    className="absolute right-1 top-1/2 -translate-y-1/2 p-2 min-w-[40px] min-h-[40px] flex items-center justify-center text-[#A0A0A0] hover:text-white transition-colors cursor-pointer z-30"
+                    title={showPassword ? "Hide password" : "Show password"}
+                  >
+                    {showPassword ? (
+                      // EyeOff icon
+                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24M1 1l22 22" />
+                      </svg>
+                    ) : (
+                      // Eye icon
+                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                      </svg>
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              {/* Error feedback notice */}
+              {error ? (
+                <div className="rounded-lg border border-[#FF2D2D]/40 bg-[#151515] p-3 flex items-center gap-2.5 text-xs text-[#FF2D2D]">
+                  <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                    <circle cx="12" cy="12" r="10" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4m0 4h.01" />
+                  </svg>
+                  <span>{error}</span>
+                </div>
+              ) : null}
+
+              {/* Sign In CTA */}
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full rounded-lg bg-[#FF6B00] py-3 text-sm font-bold uppercase tracking-wider text-white hover:bg-[#E05E00] active:scale-[0.99] disabled:opacity-50 transition-all border border-[#FF6B00] flex items-center justify-center gap-2 shadow-lg cursor-pointer"
+              >
+                {loading ? (
+                  <>
+                    <svg className="w-4 h-4 animate-spin text-white" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                    </svg>
+                    <span>Signing you in...</span>
+                  </>
+                ) : (
+                  <span>Sign In</span>
+                )}
+              </button>
+            </form>
+
+            {/* Bottom link to Sign Up */}
+            <div className="pt-2 border-t border-[#2A2A2A] text-center text-xs text-[#A0A0A0]">
+              New here?{" "}
+              <Link
+                href="/auth/sign-up"
+                className="text-[#FF6B00] font-semibold hover:underline transition-colors"
+              >
+                Create an account
+              </Link>
+            </div>
+          </div>
+        </div>
       </div>
-
-      <style jsx>{`
-        .food-drop {
-          animation-name: food-rain;
-          animation-iteration-count: infinite;
-          animation-timing-function: linear;
-          will-change: transform;
-        }
-
-        @keyframes food-rain {
-          0% {
-            transform: translate3d(0, -20vh, 0) rotate(0deg);
-          }
-          100% {
-            transform: translate3d(0, 120vh, 0) rotate(25deg);
-          }
-        }
-      `}</style>
     </div>
   );
 }
-

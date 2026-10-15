@@ -24,7 +24,7 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
     session({ session, token }) {
-      if (session.user) (session.user as any).id = token.sub ?? "";
+      if (session.user) session.user.id = token.sub ?? "";
       return session;
     },
   },

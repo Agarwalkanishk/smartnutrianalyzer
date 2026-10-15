@@ -1,26 +1,270 @@
 @import "tailwindcss";
 
+/* ==================================================
+   SmartNutriAnalyzer - Flat, Solid Color Theme
+   Strict Palette:
+   - Page Background: #080808 (Solid black)
+   - Cards / Panels:  #111111 / #151515 (Solid dark surfaces)
+   - Primary Accent:   #FF6B00 (Solid orange)
+   - Warning / Risk:   #FF2D2D (Solid red)
+   - Primary Text:     #FFFFFF (Solid white)
+   - Secondary Text:   #A0A0A0 (Solid neutral grey)
+   - Borders:          #2A2A2A (Subtle solid border)
+   ================================================== */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg-page: #080808;
+  --bg-card: #111111;
+  --bg-panel: #151515;
+  --bg-input: #151515;
+
+  --primary-orange: #FF6B00;
+  --primary-orange-hover: #E05E00;
+  --warning-red: #FF2D2D;
+  --text-white: #FFFFFF;
+  --text-secondary: #A0A0A0;
+  --text-muted: #707070;
+
+  --border-subtle: #2A2A2A;
+  --border-active: #FF6B00;
+  --border-danger: #FF2D2D;
+
+  /* Theme aliases */
+  --bg: #080808;
+  --content: #080808;
+  --card-bg: #111111;
+  --card-border: #2A2A2A;
+  --card-radius: 12px;
+  --text-primary: #FFFFFF;
+  --border-soft: #2A2A2A;
+
+  --input-bg: #151515;
+  --input-border: #2A2A2A;
+  --focus-border: #FF6B00;
+  --placeholder: #A0A0A0;
+
+  --btn-primary: #FF6B00;
+  --btn-secondary: #151515;
+  --btn-danger: #FF2D2D;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+html, body {
+  background-color: #080808 !important;
+  color: #FFFFFF !important;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  margin: 0;
+  padding: 0;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* Remove all background glows, overlays, gradients */
+body::before, body::after {
+  display: none !important;
+  content: none !important;
+}
+
+/* Structural flat surfaces */
+.bg-app {
+  background-color: #080808 !important;
+}
+
+.bg-card {
+  background-color: #111111 !important;
+  border: 1px solid #2A2A2A !important;
+  border-radius: 12px;
+}
+
+.bg-card-alt {
+  background-color: #151515 !important;
+  border: 1px solid #2A2A2A !important;
+  border-radius: 12px;
+}
+
+/* Flat Card component override */
+.card {
+  background-color: #111111 !important;
+  border: 1px solid #2A2A2A !important;
+  border-radius: 12px !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: none !important;
+}
+
+.card-active {
+  border-color: #FF6B00 !important;
+}
+
+.card-warning {
+  border-color: #FF2D2D !important;
+}
+
+/* Typography helpers */
+.text-primary {
+  color: #FFFFFF !important;
+}
+
+.text-secondary {
+  color: #A0A0A0 !important;
+}
+
+.text-muted {
+  color: #707070 !important;
+}
+
+.text-orange {
+  color: #FF6B00 !important;
+}
+
+.text-red {
+  color: #FF2D2D !important;
+}
+
+/* Solid Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background-color: #FF6B00 !important;
+  color: #FFFFFF !important;
+  border: 1px solid #FF6B00 !important;
+}
+
+.btn-primary:hover {
+  background-color: #E05E00 !important;
+}
+
+.btn-secondary {
+  background-color: #151515 !important;
+  color: #FFFFFF !important;
+  border: 1px solid #2A2A2A !important;
+}
+
+.btn-secondary:hover {
+  border-color: #FF6B00 !important;
+  color: #FF6B00 !important;
+}
+
+.btn-danger {
+  background-color: #FF2D2D !important;
+  color: #FFFFFF !important;
+  border: 1px solid #FF2D2D !important;
+}
+
+.btn-ghost {
+  background-color: transparent !important;
+  border: 1px solid #2A2A2A !important;
+  color: #FFFFFF !important;
+}
+
+.btn-ghost:hover {
+  border-color: #FF6B00 !important;
+  color: #FF6B00 !important;
+}
+
+/* Solid Forms */
+.input {
+  width: 100%;
+  border-radius: 8px;
+  background-color: #151515 !important;
+  border: 1px solid #2A2A2A !important;
+  padding: 0.5rem 0.75rem;
+  color: #FFFFFF !important;
+  outline: none;
+  box-shadow: none !important;
+}
+
+.input::placeholder {
+  color: #A0A0A0 !important;
+}
+
+.input:focus {
+  border-color: #FF6B00 !important;
+  outline: none !important;
+}
+
+/* Status Badges */
+.status-safe {
+  color: #FFFFFF !important;
+  border: 1px solid #2A2A2A !important;
+  background-color: #151515 !important;
+}
+
+.status-moderate {
+  color: #FF6B00 !important;
+  border: 1px solid #FF6B00 !important;
+  background-color: #151515 !important;
+}
+
+.status-risky, .status-unhealthy {
+  color: #FF2D2D !important;
+  border: 1px solid #FF2D2D !important;
+  background-color: #151515 !important;
+}
+
+/* Nutrition macros */
+.calories {
+  color: #FF6B00 !important;
+}
+
+.protein {
+  color: #FFFFFF !important;
+}
+
+.carbs {
+  color: #A0A0A0 !important;
+}
+
+.fat {
+  color: #FF2D2D !important;
+}
+
+/* Hardware-accelerated cross-platform falling food animations for mobile real-devices */
+@keyframes food-rain {
+  0% {
+    transform: translate3d(0, -15vh, 0) rotate(0deg);
+    -webkit-transform: translate3d(0, -15vh, 0) rotate(0deg);
+  }
+  100% {
+    transform: translate3d(0, 115vh, 0) rotate(25deg);
+    -webkit-transform: translate3d(0, 115vh, 0) rotate(25deg);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@-webkit-keyframes food-rain {
+  0% {
+    -webkit-transform: translate3d(0, -15vh, 0) rotate(0deg);
+  }
+  100% {
+    -webkit-transform: translate3d(0, 115vh, 0) rotate(25deg);
+  }
+}
+
+.food-drop {
+  animation-name: food-rain !important;
+  -webkit-animation-name: food-rain !important;
+  animation-iteration-count: infinite !important;
+  -webkit-animation-iteration-count: infinite !important;
+  animation-timing-function: linear !important;
+  -webkit-animation-timing-function: linear !important;
+  animation-play-state: running !important;
+  -webkit-animation-play-state: running !important;
+  will-change: transform;
+  pointer-events: none;
+}
+
+/* Ensure prefers-reduced-motion calms speed instead of freezing product animations */
+@media (prefers-reduced-motion: reduce) {
+  .food-drop {
+    animation-duration: 24s !important;
+    -webkit-animation-duration: 24s !important;
+  }
 }

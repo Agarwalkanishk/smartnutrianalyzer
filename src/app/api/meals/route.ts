@@ -75,3 +75,26 @@ export async function POST(req: Request) {
   return Response.json({ ok: true, entry }, { status: 201 });
 }
 
+export async function DELETE(req: Request) {
+  const session = auth ? await auth() : null;
+  const userId = session?.user?.id;
+  if (!userId) return Response.json({ error: "Unauthorized" }, { status: 401 });
+
+  const url = new URL(req.url);
+  const id = url.searchParams.get("id");
+  if (!id) return Response.json({ error: "Meal ID is required" }, { status: 400 });
+
+  const existing = await prisma.mealEntry.findFirst({
+    where: { id, userId },
+  });
+
+  if (!existing) {
+    return Response.json({ error: "Meal entry not found" }, { status: 404 });
+  }
+
+  await prisma.mealEntry.delete({
+    where: { id },
+  });
+
+  return Response.json({ ok: true });
+}

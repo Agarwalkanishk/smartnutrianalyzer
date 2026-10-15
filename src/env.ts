@@ -8,10 +8,9 @@ const envSchema = z.object({
   NEXTAUTH_URL: z.string().url().optional(),
   NEXTAUTH_SECRET: z.string().optional(),
 
-  // AI provider (OpenAI-compatible)
-  AI_BASE_URL: z.string().url().optional(),
-  AI_API_KEY: z.string().optional(),
-  AI_MODEL: z.string().optional(),
+  // AI provider (Gemini)
+  GEMINI_API_KEY: z.string().optional(),
+  GEMINI_MODEL: z.string().optional(),
 
   // OCR provider (optional)
   OCR_PROVIDER: z.string().optional(),
@@ -22,9 +21,8 @@ export const env = envSchema.parse({
   DATABASE_URL: process.env.DATABASE_URL,
   NEXTAUTH_URL: process.env.NEXTAUTH_URL,
   NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
-  AI_BASE_URL: process.env.AI_BASE_URL,
-  AI_API_KEY: process.env.AI_API_KEY,
-  AI_MODEL: process.env.AI_MODEL,
+  GEMINI_API_KEY: process.env.GEMINI_API_KEY,
+  GEMINI_MODEL: process.env.GEMINI_MODEL,
   OCR_PROVIDER: process.env.OCR_PROVIDER,
 });
 

@@ -3,8 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
- url = "postgresql://postgres:postgres@localhost:5432/smartnutrianalyzer"
+  provider = "sqlite"
+  url      = "file:./dev.db"
 }
 
 model User {
@@ -72,9 +72,9 @@ model Profile {
   goalType       String?
   paceKgPerWeek  Float?
 
-  dietaryPrefs   String[] @default([])
-  allergens      String[] @default([])
-  conditions     String[] @default([])
+  dietaryPrefs   String  @default("[]")
+  allergens      String  @default("[]")
+  conditions     String  @default("[]")
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -109,7 +109,7 @@ model Product {
   ingredientsText String?
   imageUrl        String?
   source          String   @default("openfoodfacts")
-  raw             Json?
+  raw             String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -121,8 +121,7 @@ model IngredientAnalysis {
   inputText      String
   normalizedText String
   model          String
-  output         Json
+  output         String
 
   createdAt DateTime @default(now())
 }
-

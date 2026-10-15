@@ -1,11 +1,18 @@
 import { describe, expect, it, vi } from "vitest";
 
 vi.mock("@/db/prisma", () => {
+  type IngredientAnalysisCreateInput = {
+    data: Record<string, unknown>;
+  };
+
   return {
     prisma: {
       ingredientAnalysis: {
         findUnique: vi.fn(async () => null),
-        create: vi.fn(async ({ data }: any) => ({ id: "x", ...data })),
+        create: vi.fn(async ({ data }: IngredientAnalysisCreateInput) => ({
+          id: "x",
+          ...data,
+        })),
       },
     },
   };
@@ -15,7 +22,7 @@ vi.mock("@/lib/ai/openaiCompat", () => {
   return {
     openAICompatJsonChat: vi.fn(async () => ({
       ok: false,
-      error: "AI_API_KEY is not configured",
+      error: "GEMINI_API_KEY is not configured",
     })),
   };
 });

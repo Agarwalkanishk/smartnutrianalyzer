@@ -1,7 +1,17 @@
 import { z } from "zod";
 import { createWorker } from "tesseract.js";
+import path from "path";
 
 export const runtime = "nodejs";
+const tesseractWorkerPath = path.resolve(
+  process.cwd(),
+  "node_modules",
+  "tesseract.js",
+  "src",
+  "worker-script",
+  "node",
+  "index.js"
+);
 
 type OcrWorker = Awaited<ReturnType<typeof createWorker>>;
 
@@ -16,7 +26,9 @@ async function getOcrWorker(language: string) {
     !globalForOcr.ocrWorkerPromise ||
     globalForOcr.ocrWorkerLanguage !== language
   ) {
-    globalForOcr.ocrWorkerPromise = createWorker(language);
+    globalForOcr.ocrWorkerPromise = createWorker(language, undefined, {
+      workerPath: tesseractWorkerPath,
+    });
     globalForOcr.ocrWorkerLanguage = language;
     globalForOcr.ocrQueue = Promise.resolve();
   }

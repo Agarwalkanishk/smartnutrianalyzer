@@ -2,6 +2,16 @@ import { auth } from "@/auth";
 import { prisma } from "@/db/prisma";
 import { z } from "zod";
 
+function parseJsonArray(val: string | null | undefined): string[] {
+  if (!val) return [];
+  try {
+    const parsed = JSON.parse(val);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
 export async function GET() {
   const session = await auth();
   const userId = session?.user?.id;
@@ -11,7 +21,19 @@ export async function GET() {
     where: { userId },
   });
 
-  return Response.json({ ok: true, profile });
+  if (!profile) {
+    return Response.json({ ok: true, profile: null });
+  }
+
+  return Response.json({
+    ok: true,
+    profile: {
+      ...profile,
+      dietaryPrefs: parseJsonArray(profile.dietaryPrefs),
+      allergens: parseJsonArray(profile.allergens),
+      conditions: parseJsonArray(profile.conditions),
+    },
+  });
 }
 
 const updateSchema = z.object({
@@ -41,12 +63,26 @@ export async function PUT(req: Request) {
     );
   }
 
+  const dataToSave = {
+    ...parsed.data,
+    dietaryPrefs: JSON.stringify(parsed.data.dietaryPrefs ?? []),
+    allergens: JSON.stringify(parsed.data.allergens ?? []),
+    conditions: JSON.stringify(parsed.data.conditions ?? []),
+  };
+
   const profile = await prisma.profile.upsert({
     where: { userId },
-    create: { userId, ...parsed.data },
-    update: { ...parsed.data },
+    create: { userId, ...dataToSave },
+    update: { ...dataToSave },
   });
 
-  return Response.json({ ok: true, profile });
+  return Response.json({
+    ok: true,
+    profile: {
+      ...profile,
+      dietaryPrefs: parseJsonArray(profile.dietaryPrefs),
+      allergens: parseJsonArray(profile.allergens),
+      conditions: parseJsonArray(profile.conditions),
+    },
+  });
 }
-

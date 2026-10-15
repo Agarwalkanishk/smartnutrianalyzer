@@ -49,7 +49,7 @@ smartnutrianalyzer/
 
 - Node.js 20+
 - npm 10+
-- Docker Desktop (for local PostgreSQL)
+- PostgreSQL 16+ installed locally, hosted PostgreSQL, or Docker Desktop for local PostgreSQL
 
 ## Environment Variables
 
@@ -84,7 +84,15 @@ Notes:
 npm install
 ```
 
-2. Start PostgreSQL (Docker)
+2. Start PostgreSQL
+
+Use any PostgreSQL database and set `DATABASE_URL` to it. For example, a local PostgreSQL install can use:
+
+```env
+DATABASE_URL="postgresql://postgres:your_password@localhost:5432/smartnutrianalyzer"
+```
+
+If you prefer Docker for local development, this project includes a compose file:
 
 ```bash
 docker compose up -d
@@ -110,6 +118,47 @@ npm run dev
 
 Open `http://localhost:3000`.
 
+## Deployment
+
+The easiest deployment path is:
+
+1. Use a hosted PostgreSQL database, for example Neon, Supabase, Railway, Render, or Vercel Postgres.
+2. Set the deploy project root to `smartnutrianalyzer` when the platform asks for a root directory.
+3. Add these required environment variables:
+
+```env
+DATABASE_URL="postgresql://USER:PASSWORD@HOST:5432/smartnutrianalyzer?schema=public"
+NEXTAUTH_URL="https://your-deployed-domain.example"
+NEXTAUTH_SECRET="generate-a-long-random-secret"
+```
+
+Optional environment variables:
+
+```env
+GEMINI_API_KEY=""
+GEMINI_MODEL="gemini-2.0-flash"
+OCR_PROVIDER="tesseract"
+NEXT_PUBLIC_GITHUB_URL="https://github.com/Agarwalkanishk/smartnutrianalyzer"
+```
+
+Recommended production commands:
+
+```bash
+npm install
+npm run prisma:deploy
+npm run build
+npm run start
+```
+
+For Vercel, set:
+
+- Root Directory: `smartnutrianalyzer`
+- Build Command: `npm run build`
+- Install Command: `npm install`
+- Output Directory: leave default
+
+After the first deploy, run `npm run prisma:deploy` once against the production database. Some hosts let you run this as a deploy/release command; otherwise run it locally with the production `DATABASE_URL`.
+
 ## Available Scripts
 
 - `npm run dev` - start development server
@@ -120,6 +169,7 @@ Open `http://localhost:3000`.
 - `npm run test:watch` - run Vitest in watch mode
 - `npm run prisma:generate` - generate Prisma client
 - `npm run prisma:migrate` - apply dev migrations
+- `npm run prisma:deploy` - apply production migrations
 - `npm run prisma:studio` - open Prisma Studio
 
 ## API Overview
@@ -157,7 +207,7 @@ If lint reports pre-existing `no-explicit-any` errors, they are existing codebas
 - Port already in use:
 - If `3000` is busy, Next.js starts on `3001`.
 - Database connection issues:
-- Confirm Docker is running and `docker compose up -d` completed.
+- Confirm `DATABASE_URL` points to a reachable PostgreSQL database. If using Docker locally, confirm Docker is running and `docker compose up -d` completed.
 - Auth redirect/session issues:
 - Verify `NEXTAUTH_URL` and `NEXTAUTH_SECRET` in `.env`.
 - Gemini analysis unavailable:

@@ -6,6 +6,7 @@ import {
   type RuleFlag,
 } from "@/lib/ingredients/rules";
 import { getIndianMarketAlternatives } from "@/lib/products/indiaAlternatives";
+import type { Prisma } from "@prisma/client";
 import crypto from "crypto";
 import { z } from "zod";
 
@@ -35,6 +36,8 @@ const outputSchema = z.object({
   betterAlternatives: z.array(z.string().min(1).max(180)).max(12).optional(),
   disclaimers: z.array(z.string().min(1).max(300)).max(10),
 });
+
+type AnalysisOutput = z.infer<typeof outputSchema>;
 
 function riskFromFlags(flags: RuleFlag[]) {
   if (flags.some((f) => f.severity === "high")) return "high" as const;
@@ -76,7 +79,7 @@ export async function POST(req: Request) {
   const deterministic = computeRuleScoreAndVerdict(flags);
 
   const analyzerVersion = "v2";
-  const model = process.env.AI_MODEL ?? "gpt-4.1-mini";
+  const model = process.env.GEMINI_MODEL ?? "gemini-2.0-flash";
   const normalizedProductName = (parsed.data.productName ?? "").trim().toLowerCase();
   const inputHash = crypto
     .createHash("sha256")
@@ -102,12 +105,21 @@ export async function POST(req: Request) {
       {
         role: "system",
         content:
-          "You are a nutrition ingredient assistant. Be cautious and factual. Return ONLY a single JSON object that matches the requested schema. Do not include markdown or extra text.",
+          [
+            "You are a nutrition ingredient assistant for India-market products.",
+            "Be cautious and factual.",
+            "When suggesting betterAlternatives, prioritize common, widely available products users can find on popular Indian grocery/e-commerce platforms.",
+            "Prefer concrete product names and brand + product format when possible (for example: 'The Whole Truth Protein Bar - Cocoa').",
+            "Avoid obscure niche items and avoid medical claims.",
+            "Return ONLY a single JSON object that matches the requested schema.",
+            "Do not include markdown or extra text.",
+          ].join(" "),
       },
       {
         role: "user",
         content: [
           "Analyze this ingredients list for potential concerns and provide safer alternatives.",
+          "For betterAlternatives, include practical items a user can search and buy easily.",
           "",
           "IngredientsText:",
           normalized,
@@ -129,7 +141,7 @@ export async function POST(req: Request) {
     ],
   });
 
-  let analysis: z.infer<typeof outputSchema>;
+  let analysis: AnalysisOutput;
   if (!llmRes.ok) {
     analysis = {
       riskLevel: riskFromFlags(flags),
@@ -138,8 +150,8 @@ export async function POST(req: Request) {
       confidence: 0.35,
       summary:
         flags.length
-          ? "Some ingredients matched common concern markers. Configure AI_API_KEY for deeper analysis."
-          : "No obvious concern markers detected. Configure AI_API_KEY for deeper analysis.",
+          ? "Some ingredients matched common concern markers. Configure GEMINI_API_KEY for deeper analysis."
+          : "No obvious concern markers detected. Configure GEMINI_API_KEY for deeper analysis.",
       flagged: flags.map((f) => ({
         ingredient: f.ingredient,
         category: f.category,
@@ -231,7 +243,7 @@ export async function POST(req: Request) {
           inputText: parsed.data.ingredientsText,
           normalizedText: normalized,
           model,
-          output: analysis as any,
+          output: JSON.stringify(analysis),
         },
       })
       .catch(() => null);
